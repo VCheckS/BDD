@@ -10,18 +10,20 @@ import org.junit.jupiter.api.Test;
 import static Data.DataHelper.*;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class MoneyTransferTest {
     LoginPageV1 loginPageV1;
     DashboardPage dashboardPage;
 
     @BeforeEach
     void setUp() {
-        loginPageV1 =  open("http://localhost:9999", LoginPageV1.class);
+        loginPageV1 = open("http://localhost:9999", LoginPageV1.class);
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPageV1.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor();
         dashboardPage = verificationPage.validVerify(verificationCode);
     }
+
     @Test
     void shouldTransferMoneyBetweenOwnCardsV1() {
         var firstCardInfo = getCard1Info();
