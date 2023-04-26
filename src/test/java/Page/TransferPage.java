@@ -16,15 +16,18 @@ public class TransferPage {
     public TransferPage() {
         transferButton.shouldBe(visible);
     }
+
     public DashboardPage makeValidTransfer(String amountToTransfer, DataHelper.CardInfo cardInfo) {
         makeTransfer(amountToTransfer, cardInfo);
         return new DashboardPage();
     }
+
     public void makeTransfer(String amountToTransfer, DataHelper.CardInfo cardInfo) {
         amountInput.setValue(amountToTransfer);
         fromInput.setValue(cardInfo.getCardNumber());
         transferButton.click();
     }
+
     public void findErrorMessage(String expectedText) {
         errorMessage.shouldHave(exactText(expectedText)).shouldBe(visible);
     }
