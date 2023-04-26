@@ -1,13 +1,15 @@
 package Test;
+
+import Data.DataHelper;
 import Page.DashboardPage;
 import Page.LoginPageV1;
-import Data.DataHelper;
+import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static Data.DataHelper.*;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class MoneyTransferTest {
     LoginPageV1 loginPageV1;
     DashboardPage dashboardPage;
@@ -26,7 +28,7 @@ class MoneyTransferTest {
         var secondCardInfo = getCard2Info();
         var firstBalance = dashboardPage.getCardBalance(firstCardInfo);
         var secondBalance = dashboardPage.getCardBalance(secondCardInfo);
-        var amount = generateInvalidAmount(firstBalance);
+        var amount = generateValidAmount(firstBalance);
         var expectedBalanceFirst = firstBalance - amount;
         var expectedBalanceSecond = secondBalance + amount;
         var transferPage = dashboardPage.selectCardToTransfer(secondCardInfo);
@@ -36,6 +38,24 @@ class MoneyTransferTest {
         assertEquals(expectedBalanceFirst, actualBalanceFirst);
         assertEquals(expectedBalanceSecond, actualBalanceSecond);
 
+    }
+
+    @Test
+    void shouldNotMakeTransfer() {
+        Configuration.holdBrowserOpen = true;
+        var firstCardInfo = getCard1Info();
+        var secondCardInfo = getCard2Info();
+        var firstBalance = dashboardPage.getCardBalance(firstCardInfo);
+        var secondBalance = dashboardPage.getCardBalance(secondCardInfo);
+        var amount = generateInvalidAmount(secondBalance);
+        var expectedBalanceFirst = firstBalance + amount;
+        var expectedBalanceSecond = secondBalance - amount;
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+        transferPage.makeTransfer(String.valueOf(amount), secondCardInfo);
+        var actualBalanceFirst = dashboardPage.getCardBalance(firstCardInfo);
+        var actualBalanceSecond = dashboardPage.getCardBalance(secondCardInfo);
+        assertEquals(expectedBalanceFirst, actualBalanceFirst);
+        assertEquals(expectedBalanceSecond, actualBalanceSecond);
     }
 
 }
